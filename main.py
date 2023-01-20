@@ -46,7 +46,8 @@ while running:
 
     screen.blit(bg,(bg_x,0))
     screen.blit(bg, (bg_x + 1280, 0))
-    screen.blit(walk_right[player_anim_count],(100,430))
+    screen.blit(walk_right[player_anim_count],(100,500))
+    screen.blit(walk_left[player_anim_count], (1100, 500))
 
 
     if player_anim_count == 3 :
@@ -68,7 +69,7 @@ while running:
             running = False
             pygame.quit()
 
-    clock.tick(15)
+    clock.tick(10)
 
 
 
