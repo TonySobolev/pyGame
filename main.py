@@ -1,45 +1,64 @@
 import pygame
 
-pygame.init()
 
+clock = pygame.time.Clock()
+
+pygame.init()
 screen = pygame.display.set_mode((1280, 720))  #,flags=pygame.NOFRAME  no frame around app
 pygame.display.set_caption("Sobolev Game")
 icon = pygame.image.load('images/icon.png')
 pygame.display.set_icon(icon)
 
-square = pygame.Surface((100, 100))
-square.fill('Blue')
+
 
 running = True
 backgroungColor=(3, 252, 186)
 
-myfont = pygame.font.Font('fonts/RubikVinyl-Regular.ttf', 60)
+myfont = pygame.font.Font('fonts/RubikVinyl-Regular.ttf', 40)
 text_surface = myfont.render('SobolevGameDev', True, 'black')
 
-player = pygame.image.load('images/icon.png')
+bg = pygame.image.load('images/background.png')
 
-x_coord = 300
-x_dir = 1
+walk_left = [
+    pygame.image.load('images/player_left/left1.png'),
+    pygame.image.load('images/player_left/left2.png'),
+    pygame.image.load('images/player_left/left3.png'),
+    pygame.image.load('images/player_left/left4.png')
+]
+
+walk_right = [
+    pygame.image.load('images/player_right/right2.png'),
+    pygame.image.load('images/player_right/right3.png'),
+    pygame.image.load('images/player_right/right1.png'),
+    pygame.image.load('images/player_right/right4.png')
+]
+
+player_anim_count = 0
+
+bg_x = 0
+
+bg_sound = pygame.mixer.Sound('sounds/music.mp3')
+bg_sound.play()
+
 
 while running:
 
-    screen.fill(backgroungColor)
 
-    screen.blit(square, (50, 50))
-
-    pygame.draw.circle(screen, 'red', (250,250), 50)
-    pygame.draw.circle(square, 'red', (25, 25), 10)
-    screen.blit(text_surface,(500,0))
+    screen.blit(bg,(bg_x,0))
+    screen.blit(bg, (bg_x + 1280, 0))
+    screen.blit(walk_right[player_anim_count],(100,430))
 
 
+    if player_anim_count == 3 :
+        player_anim_count = 0
+    else:
+        player_anim_count +=1
 
+    bg_x -= 5
+    if bg_x == -1280:
+        bg_x = 0
 
-    screen.blit(player, (x_coord,100))
-    x_coord+=x_dir
-    if x_coord >600:
-        x_dir = -1
-    elif x_coord <300:
-        x_dir = 1
+    screen.blit(text_surface,(900,670))
 
 
     pygame.display.update()
@@ -48,6 +67,8 @@ while running:
         if event.type == pygame.QUIT:
             running = False
             pygame.quit()
+
+    clock.tick(15)
 
 
 
