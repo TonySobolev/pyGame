@@ -24,6 +24,11 @@ myfont_restart = pygame.font.Font('fonts/RubikVinyl-Regular.ttf', 55) #text for 
 text_restart = myfont_restart.render('Press here to try again', True, 'orange')
 text_restart_rect = text_restart.get_rect(topleft=(290,350))   #creating rect to check if we click on restart
 
+arrows_left = 15
+arrow = pygame.image.load('images/arrow.png').convert_alpha()  #creating projectile
+arrows = []
+
+
 bg = pygame.image.load('images/background.png').convert()
 
 bg_sound = pygame.mixer.Sound('sounds/music.mp3')
@@ -134,7 +139,24 @@ while running:
         if bg_x <= -1280:
             bg_x = 0
 
+
+
+        if arrows: #behavior of arrows, spawn on player location, destroy after it leaves the screen
+            for (i, el) in enumerate(arrows):
+                screen.blit(arrow, (el.x, el.y))
+                el.x +=10
+
+                if el.x > 1300:
+                    arrows.pop(i)
+
+                if ghost_list_in_game:     #checking collision of arrows with enemies, annihillate both
+                    for (index, ghost_el) in enumerate(ghost_list_in_game):
+                        if el.colliderect(ghost_el):
+                            ghost_list_in_game.pop(index)
+                            arrows.pop(i)
+
         screen.blit(text_surface,(900,10))
+
 
 
 
@@ -156,6 +178,8 @@ while running:
             bg_sound.play()
             player_x =100
             ghost_list_in_game.clear()
+            arrows.clear()
+            arrows_left = 15
 
     pygame.display.update()
 
@@ -166,7 +190,11 @@ while running:
             running = False
             pygame.quit()
         if event.type == ghost_timer:
-            ghost_list_in_game.append(ghost.get_rect(topleft=(1285,550)))  #creating enemy at starting position
+            ghost_list_in_game.append(ghost.get_rect(topleft=(1285,530)))  #creating enemy at starting position
+
+        if gameplay and event.type ==pygame.KEYUP and event.key == pygame.K_q and arrows_left>0: #shooting mechanic, shooting allowed only while gaming, with single click on button
+            arrows.append(arrow.get_rect(topleft=(player_x + 30, player_y + 30)))
+            arrows_left -= 1
 
 
     clock.tick(70)
